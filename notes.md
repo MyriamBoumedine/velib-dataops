@@ -62,3 +62,57 @@
 - Vérifier dans quel terminal et quel dossier je suis.
 - Diagnostiquer avant de corriger.
 - Quand une commande pose une question, répondre à la question, ne pas taper une autre commande.
+
+### Fin de session 0 : leçons supplémentaires
+- Linux est sensible à la casse : `notes.md` et `NOTES.md` sont deux fichiers différents.
+- HTTPS ou SSH : vérifier l'adresse du dépôt distant avec `git remote -v`.
+  - La changer : `git remote set-url origin git@github.com:<pseudo>/<depot>.git`
+  - Avec une clé SSH, toujours choisir l'URL SSH sur GitHub (bouton Code > SSH).
+- Premier push : `git push -u origin main` (`-u` relie la branche locale à celle de GitHub).
+
+### Les 4 zones de Git
+- Dossier de travail → `git add` → zone de préparation (staging)
+  → `git commit` → dépôt local → `git push` → GitHub
+- Image : `add` = remplir le carton, `commit` = le fermer avec une étiquette, `push` = l'envoyer.
+- Toujours faire `git status` avant `git commit`.
+- Attention à `git add .` : il ajoute tout, y compris d'éventuels secrets → utiliser un `.gitignore`.
+
+### Comment fonctionne Docker
+- Docker = un client (la commande `docker`) + un daemon (le moteur, qui crée les conteneurs).
+- Le client envoie ses ordres au daemon via le socket `/var/run/docker.sock`.
+- Accès au socket réservé à root et au groupe `docker`.
+- Être dans le groupe `docker` équivaut presque à être administrateur (question d'entretien classique).
+
+## Session 1 – Partie A : le terminal
+
+### Fichiers et dossiers
+- `mkdir -p a/b c/d` : créer plusieurs dossiers (et leurs parents) en une commande.
+- `cp source destination` : copier.
+- `mv ancien nouveau` : déplacer ou renommer.
+- `rm fichier` : supprimer un fichier. `rm -r dossier` : supprimer un dossier et son contenu.
+  - Pas de corbeille ! Toujours relire le chemin. Jamais de `rm -rf` sur `~` ou `/`.
+- `ls -R` ou `tree` : afficher une arborescence.
+- `find ~/dossier -iname "nom*"` : chercher un fichier (`-iname` ignore la casse).
+
+### Écrire dans un fichier
+- `echo "texte" > fichier` : écrase le fichier.
+- `echo "texte" >> fichier` : ajoute une ligne à la fin.
+- `wc -l fichier` : compter les lignes.
+- `nano fichier` : éditeur de texte dans le terminal.
+  - `Ctrl+O` puis Entrée = enregistrer, `Ctrl+X` = quitter.
+
+### Scripts Bash
+- La première ligne `#!/bin/bash` (shebang) indique quel programme lit le script.
+- Un fichier n'est exécutable que s'il a le droit `x` : `chmod +x script.sh`.
+- `-rw-r--r--` devient `-rwxr-xr-x` après `chmod +x`.
+- `$(commande)` est remplacé par le résultat de la commande au moment de l'exécution.
+
+### Lire les droits : `-rwxr-xr-x`
+- 1er caractère : type (`-` fichier, `d` dossier, `s` socket).
+- Puis 3 blocs de 3 : propriétaire / groupe / autres.
+- `r` = lire, `w` = écrire, `x` = exécuter, `-` = droit absent.
+
+### Pièges rencontrés
+- Plusieurs commandes sur une même ligne : Linux n'en voit qu'une seule. Une commande par ligne.
+- Un espace dans un chemin sépare deux éléments : utiliser `/` entre le dossier et le fichier.
+- `sudo` demande le mot de passe Ubuntu (rien ne s'affiche à la saisie).

@@ -116,3 +116,45 @@
 - Plusieurs commandes sur une même ligne : Linux n'en voit qu'une seule. Une commande par ligne.
 - Un espace dans un chemin sépare deux éléments : utiliser `/` entre le dossier et le fichier.
 - `sudo` demande le mot de passe Ubuntu (rien ne s'affiche à la saisie).
+
+## Session 1 – Partie B : Docker, images et conteneurs
+
+### Image et conteneur
+- Image = modèle figé (programme + dépendances + config). Ex : `postgres:16`.
+- Conteneur = instance qui tourne, créée à partir d'une image (image = classe, conteneur = objet).
+- Le tag (`:16`) = la version de l'image. Sans tag, Docker prend `latest` (à éviter : version imprévisible).
+- Les images viennent d'un registry (Docker Hub par défaut) et sont découpées en couches (layers).
+
+### Commandes
+- `docker pull postgres:16` : télécharger une image.
+- `docker images` : lister les images.
+- `docker run -d --name mon-postgres -e POSTGRES_PASSWORD=secret -p 5432:5432 postgres:16`
+  - `-d` : en arrière-plan (detached), le terminal reste libre.
+  - `--name` : nom du conteneur (pas de la base de données).
+  - `-e` : variable d'environnement, la façon standard de configurer un conteneur.
+  - `-p MACHINE:CONTENEUR` : relie un port de ma machine à un port du conteneur.
+- `docker ps` : conteneurs qui tournent. `docker ps -a` : tous, y compris arrêtés.
+- `docker logs mon-postgres` : voir ce qu'affiche le conteneur.
+- `docker exec -it mon-postgres psql -U postgres` : lancer une commande dans un conteneur qui tourne.
+
+### Cycle de vie
+- `run` : créer et démarrer.
+- `stop` / `start` : éteindre et rallumer (le conteneur existe toujours).
+- `exec` : entrer dans un conteneur qui tourne (impossible s'il est arrêté).
+- `rm` : supprimer le conteneur (il doit être arrêté).
+- `rmi` : supprimer une image.
+
+### L'expérience des données
+- `stop` puis `start` : la table est toujours là.
+- `rm` puis un nouveau `run` : la table a disparu.
+- Pourquoi : les données sont stockées dans le conteneur. Supprimer le conteneur = supprimer les données.
+- Les conteneurs sont jetables par conception. Solution pour garder les données : les volumes (session 2).
+
+### SQL dans psql
+- Textes entre guillemets simples `'Bastille'`. Guillemets doubles = noms de colonnes ou tables.
+- Une requête ne s'exécute qu'au `;`.
+- `\dt` lister les tables, `\d table` décrire une table, `\q` quitter.
+
+### Pièges
+- Port déjà utilisé (`port is already allocated`) : un autre conteneur occupe le port → `docker ps`.
+- Toujours faire le ménage après un test : `docker stop` puis `docker rm`.
